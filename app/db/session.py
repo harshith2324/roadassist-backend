@@ -1,16 +1,18 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase
 from app.core.config import get_settings
-import ssl
 
 settings = get_settings()
 
-ssl_context = ssl.create_default_context()
+connect_args = {
+    "ssl": "require",
+    "server_settings": {"application_name": "roadassist"},
+}
 
 engine = create_async_engine(
     settings.DATABASE_URL,
-    echo=settings.APP_ENV == "development",
-    connect_args={"ssl": ssl_context},
+    echo=False,
+    connect_args=connect_args,
 )
 
 AsyncSessionLocal = async_sessionmaker(
